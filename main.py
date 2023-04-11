@@ -2,8 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 
-# Fonction qui récupère les url d'une catégory de livre
-
+# Fonction qui récupère les données d'un livre sous forme de dictionnaire.
 
 def scrap_book(book_url):
     r = requests.get(book_url)
@@ -27,11 +26,9 @@ def scrap_book(book_url):
 
     return book_data
 
+# Fonction qui écrit les données d'un livre dans un fichier CSV à partir d'un dictionnaire.
 
 def write_book_data_csv(book_data):
-    
-    # Ecrire un fichier csv contenant les données du livre à partir d'un dictionnaire.
-
     with open(f'{book_data["title"]}.csv', mode="w") as f:
         writer = csv.writer(f)
 
@@ -47,13 +44,11 @@ def write_book_data_csv(book_data):
         print(liste_valeur)
         writer.writerow(liste_valeur)
 
+# Fonction qui récupère les URL de tous les livres d'une catégorie et les renvoies sous forme d'une liste.
 
 def scrap_category(url):
     
-    # Renvoie les URL des livres sous forme de liste.
-    
     book_urls = []
-
     page_number = 2
 
     r = requests.get(url)
@@ -85,17 +80,15 @@ def scrap_category(url):
 
     return book_urls
 
+# Fonction qui retourne le nom de la catégorie à partir de l'URL de la catégorie
 
 def get_category_name_from_url(category_url):
     
-    # Renvoie le nom de la catégorie à partir de l'URL de la catégorie.
-   
     return category_url.split("/")[-2]
 
+# Fonction qui écrit les données de tous les livres d'une catégorie dans un fichier CSV
 
 def write_category_data_csv(category_url):
-    
-    # Ecrire un fichier csv contenant toutes les données du livre d'une catégorie.
     
     book_urls = scrap_category(category_url)
 
@@ -118,15 +111,13 @@ def write_category_data_csv(category_url):
         for book_url in book_urls:
             book_data = scrap_book(book_url)
             writer.writerow(book_data.values())
-
-
-category_url = "https://books.toscrape.com/catalogue/category/books/travel_2/index.html"
+            
+category_url = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
 write_category_data_csv(category_url)
 
+# Fonction qui récupère les URL de toutes les catégories sous forme de liste.
 
 def scrap_categories():
-    
-    # Renvoie une liste d'URL de catégorie
 
     url = "https://books.toscrape.com/index.html"
     category = []
@@ -145,3 +136,12 @@ def scrap_categories():
         category.append(cat_url)
 
     return category
+
+# Fonction qui écrit les données de tous les livres de toutes les catégories dans un fichier CSV
+
+def write_all_categories_data():
+    categories = scrap_categories()[1:]
+    for category_url in categories:
+        write_category_data_csv(category_url)
+        
+write_all_categories_data()
