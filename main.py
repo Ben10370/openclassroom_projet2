@@ -3,9 +3,18 @@ from bs4 import BeautifulSoup
 import csv
 import os
 
-# Fonction qui télécharge les images des livres et les stock en local dans le dossier du programme, puis sous dossier images_books puis sous dossiers de chaques catégories.
-
 def download_image(img_url, title, category):
+    """
+    Télécharge une image de livre et la stocke localement dans le dossier images_books/catégorie.
+
+    Args:
+        img_url (str): L'URL de l'image à télécharger.
+        title (str): Le titre du livre.
+        category (str): La catégorie du livre.
+
+    Returns:
+        None
+    """
     category_dir = os.path.join("images_books", category)
     if not os.path.exists(category_dir):
         os.makedirs(category_dir)
@@ -17,9 +26,18 @@ def download_image(img_url, title, category):
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
                 
-# Fonction qui récupère les données d'un livre sous forme de dictionnaire.
 
 def scrap_book(book_url):
+    """
+    Récupère les données d'un livre à partir de son URL et les retourne sous forme de dictionnaire.
+
+    Args:
+        book_url (str): L'URL du livre à récupérer.
+
+    Returns:
+        dict: Un dictionnaire contenant les données du livre, y compris son titre, son URL, son UPC, son prix hors taxe,
+            son prix TTC, sa disponibilité en stock, sa description de produit, sa catégorie, sa note de revue et son URL d'image.
+    """
     r = requests.get(book_url)
     if r.ok:
         soup = BeautifulSoup(r.content, "html.parser")
@@ -43,9 +61,18 @@ def scrap_book(book_url):
     
     return book_data
 
-# Fonction qui écrit les données d'un livre dans un fichier CSV à partir d'un dictionnaire.
 
 def write_book_data_csv(book_data):
+    """
+    Écrit les données d'un livre dans un fichier CSV à partir d'un dictionnaire.
+
+    Args:
+        book_data (dict): Un dictionnaire contenant les données du livre, y compris son titre, son URL, son UPC, son prix hors taxe,
+            son prix TTC, sa disponibilité en stock, sa description de produit, sa catégorie, sa note de revue et son URL d'image.
+
+    Returns:
+        None
+    """
     with open(f'{book_data["title"]}.csv', mode="w") as f:
         writer = csv.writer(f)
 
@@ -60,11 +87,18 @@ def write_book_data_csv(book_data):
             liste_valeur.append(valeur)
         print(liste_valeur)
         writer.writerow(liste_valeur)
-
-# Fonction qui récupère les URL de tous les livres d'une catégorie et les renvoies sous forme d'une liste.
+        
 
 def scrap_category(url):
-    
+    """
+    Récupère les URLs de tous les livres d'une catégorie et les renvoie sous forme d'une liste.
+
+    Args:
+        url (str): L'URL de la catégorie à scraper.
+
+    Returns:
+        list: Une liste contenant les URLs de tous les livres de la catégorie.
+    """
     book_urls = []
     page_number = 2
 
@@ -77,12 +111,11 @@ def scrap_category(url):
     while True:
         articles = soup.find_all("article", class_="product_pod")
         for article in articles:
-            book_url = article.find("a")["href"][8:]  # récupérer url d'un livre
+            book_url = article.find("a")["href"][8:]
             book_url = f"https://books.toscrape.com/catalogue{book_url}"
-            book_urls.append(book_url)  # ajouter url du livre a la liste book_urls
+            book_urls.append(book_url)
 
-        # integrer le bouton page suivante
-        if soup.find("li", class_="next"):  # Si le bouton page suivante existe
+        if soup.find("li", class_="next"):
             next_page_url = url.replace("index.html", f"page-{page_number}.html")
             print(next_page_url)
             r = requests.get(next_page_url)
@@ -97,16 +130,34 @@ def scrap_category(url):
 
     return book_urls
 
-# Fonction qui retourne le nom de la catégorie à partir de l'URL de la catégorie.
 
 def get_category_name_from_url(category_url):
+    """
+    Retourne le nom de la catégorie à partir de l'URL de la catégorie.
     
+    Args:
+        category_url: (str), URL de la catégorie
+    Returns: 
+        (str), nom de la catégorie
+    """
     return category_url.split("/")[-2]
 
-# Fonction qui écrit les données de tous les livres d'une catégorie dans un fichier CSV et les stocks dans un dossier csv_books_data.
 
 def write_category_data_csv(category_url):
+    """
+    Fonction qui récupère les données de tous les livres d'une catégorie et les écrit dans un fichier CSV.
     
+    Args:
+    - category_url (str): l'URL de la page de la catégorie dont on veut récupérer les données.
+    
+    Returns:
+    - None
+    
+    Cette fonction utilise la fonction `scrap_category` pour récupérer les URL de tous les livres de la catégorie.
+    Pour chaque livre, elle utilise la fonction `scrap_book` pour récupérer les données du livre.
+    Elle stocke toutes les données dans un fichier CSV dans le dossier "csv_books_data" et utilise le nom de la catégorie
+    pour nommer le fichier CSV.
+    """
     book_urls = scrap_category(category_url)
     
     if not os.path.exists("csv_books_data"):
@@ -137,10 +188,14 @@ def write_category_data_csv(category_url):
 category_url = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
 write_category_data_csv(category_url)
 
-# Fonction qui récupère les URL de toutes les catégories sous forme de liste.
 
 def scrap_categories():
+    """
+    Récupère les URL de toutes les catégories du site "https://books.toscrape.com/" sous forme de liste.
 
+    Returns:
+        category (list): Liste des URL de toutes les catégories du site "https://books.toscrape.com/".
+    """
     url = "https://books.toscrape.com/index.html"
     category = []
 
@@ -162,6 +217,19 @@ def scrap_categories():
 # Fonction qui écrit les données de tous les livres de toutes les catégories dans un fichier CSV.
 
 def write_all_categories_data():
+    """
+    Fonction qui écrit les données de tous les livres de toutes les catégories dans un fichier CSV.
+
+    La fonction récupère toutes les URL des catégories en appelant la fonction 'scrap_categories', 
+    puis pour chaque URL de catégorie, elle appelle la fonction 'write_category_data_csv' pour écrire 
+    les données de tous les livres de cette catégorie dans un fichier CSV et les stocke dans un dossier 
+    'csv_books_data' créé à cet effet.
+
+        Aucun paramètre n'est requis.
+
+    Returns:
+        None.
+    """
     categories = scrap_categories()[1:]
     for category_url in categories:
         write_category_data_csv(category_url)
