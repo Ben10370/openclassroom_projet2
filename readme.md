@@ -92,4 +92,4 @@ A noter que pour des raisons techniques d'enregistrement des fichiers, le nom de
 ## Credits
 
 Projet réalisé par Benoit BONNIVARD
-Assisté par Idriss Nicolas (Mentor Openclassrooms)
+Assisté par Nicolas (Mentor Openclassrooms)
