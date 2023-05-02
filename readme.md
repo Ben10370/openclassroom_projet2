@@ -1,31 +1,95 @@
-OpenClassroom_projet2: Web-scrapping
+# OpenClassroom_projet2: Web-scrapping
 
-Il s'agit d'un script de scraping Web écrit en Python. Le script récupère le site Web " https://books.toscrape.com/ " pour extraire les données du livre, y compris le titre du livre, le prix, la disponibilité, la description du produit, la catégorie et l'image.
+## Description
 
-Le script contient plusieurs fonctions qui exécutent des tâches spécifiques. La "download_image" fonction télécharge l'image de couverture du livre et la stocke localement. La "scrap_book" fonction extrait les données d'un livre à partir d'une seule page de livre. La "write_book_data_csv" fonction écrit les données du livre dans un fichier CSV. La "scrap_category" fonction récupère toutes les URL de livres à partir d'une seule page de catégorie. La "get_category_name_from_url" fonction extrait le nom de la catégorie de l'URL de la catégorie. La "write_category_data_csv" fonction écrit les données de tous les livres d'une catégorie dans un fichier CSV. La "scrap_categories" fonction récupère toutes les URL de catégorie de la page principale.
+- article 1
 
-Le script peut être exécuté pour récupérer les données de tous les livres sur le site Web ou pour une catégorie spécifique. Il crée un fichier CSV distinct pour chaque livre et un fichier CSV distinct pour chaque catégorie. Il télécharge et enregistre également les images de couverture du livre dans un répertoire séparé.
+Il s'agit d'un script de scraping Web écrit en Python. Le script récupère le site Web [https://books.toscrape.com/] pour extraire les données du livre, y compris le titre du livre, le prix, la disponibilité, la description du produit, la catégorie et l'image.
 
-Avant de commencer, cloner le projet en local sur votre machine, copiez l'URL de ce repo et lancez la commande suivante:
+- article 2
 
-git clone git@github.com:Ben10370/openclassroom_projet2.git (SSH)
+Le script peut être exécuté pour récupérer les données de tous les livres sur le site Web ou pour une catégorie spécifique. Il crée un fichier CSV distinct pour chaque catégorie. Il télécharge et enregistre également les images de couverture des livres dans un répertoire séparé de chaques catégories.
 
-git clone https://github.com/Ben10370/openclassroom_projet2.git (HTTPS)
+## Prérequies
 
-Mise en place du projet :
+Ce script à été créer avec **_python version 3.8.10_** sur **_UBUNTU_**
 
-Ce script à été créer avec python version 3.8.10
+Les **modules nécéssaires** sont:
 
-Créer et activer l'environnement virtuel, puis exécuter le code d'application.
+**_beautifulsoup4==4.11.1_**
+**_requests==2.28.2_**
 
---- Pour créer un environnement virtuel, dans la racine du projet, en votre terminal exécutez la commande python -m venv "nom de l'environnement"
+## Installation
 
---- Pour activer l'environnement, exécutez source env/bin/activate (si vous êtes sous Windows, la commande sera env/Scripts/activate.bat).
+- étape 1 :
 
-À ce stade, votre terminal ajoutera probablement le nom de votre environnement au début de chaque ligne de votre terminal. Si vous exécutez pip freeze, vous ne devriez maintenant pas voir de paquet répertorié. Cela montre qu'aucun paquet n'est installé dans votre environnement virtuel. C'est le comportement par défaut lorsque vous créez un environnement virtuel.
+Avant de commencer, **cloner le projet en local sur votre machine**, **copiez l'URL de ce repo** et **lancez la commande suivante dans votre terminal**:
 
---- cd dans le répertoire où se trouve requirements.txt et dans votre terminal utilisez pip install -r requirements.txt
+`git clone https://github.com/Ben10370/openclassroom_projet2.git` **(HTTPS)**
 
---- Dans la racine du projet, dans votre terminal tapez python (ou python3) main.py pour que la magie commence
+- étape 2 :
 
---- Si vous deviez « quitter » ou « désactiver » votre environnement virtuel, exécutez la commande deactivate pendant que votre environnement virtuel est activé. Selon le terminal que vous utilisez, le suffixe (env) n’apparaîtra plus.
+    - étapes 2.1
+
+        Créer et activer l'environnement virtuel.
+
+        Pour **créer** un environnement virtuel, **dans la racine du projet**, ouvrez votre terminal **exécutez la commande**: 
+        
+        `python -m venv <nom de l'environnement>`
+
+        Pour **activer** l'environnement virtuel, **exécutez la commande**:
+        
+        `source env/bin/activate` 
+
+À ce stade, votre terminal ajoutera probablement le nom de votre environnement au début de chaque ligne de votre terminal. 
+
+Si vous exécutez `pip freeze`, vous ne devriez maintenant pas voir de module répertorié, cela montre qu'aucun module n'est installé dans votre environnement virtuel. C'est le comportement par défaut lorsque vous créez un environnement virtuel.
+
+- étape 3 :
+
+taper `cd` dans le répertoire où se trouve **_requirements.txt_** et dans votre terminal tapez la commande `pip install -r requirements.txt`
+
+- étape 4 :
+
+exécuter le code d'application : 
+
+Dans la racine du projet, dans votre terminal tapez `python main.py` ou dans le cas ou vous utilisez python 3, taper `python3 main.py` pour que la magie commence
+
+Si vous deviez **_quitter_** » ou **_désactiver_** votre environnement virtuel, exécutez la commande `deactivate` pendant que votre environnement virtuel est activé. Selon le terminal que vous utilisez, le suffixe (env) n’apparaîtra plus.
+
+## Format des donnés
+
+Une fois le script executé correctement, les fichiers suivants seront apparus le dossier de travail :
+
+1. Un fichier CSV par catégorie d'ouvrages, nommé _nom_de_la_categorie_.csv, utilisant la virgule comme séparateur et contenant les informations suivantes, indiquées en en-tête du fichier :
+
+* product_page_url
+* universal_ product_code (upc)
+* title
+* price_including_tax
+* price_excluding_tax
+* number_available
+* product_description
+* category
+* review_rating
+* image_url
+
+2. Un fichier JPG par ouvrage, correspondant à l'image de sa couverture présente sur le site.
+A noter que pour des raisons techniques d'enregistrement des fichiers, le nom de ces fichiers images correspond au titre de l'ouvrage et classées dans des sous dossiers qui portent le nom_de_la_categorie et ayant subi les modifications suivantes :
+
+* Les caractères spéciaux suivants ont été remplacés par le caractère "_" :
+
+* ’
+  * '
+  * :
+  * .
+  * &
+  * \*
+  * /
+  * \\
+  * ?
+
+## Credits
+
+Projet réalisé par Benoit BONNIVARD
+Assisté par Idriss Nicolas (Mentor Openclassrooms)
