@@ -214,7 +214,6 @@ def scrap_categories():
 
     return category
 
-# Fonction qui écrit les données de tous les livres de toutes les catégories dans un fichier CSV.
 
 def write_all_categories_data():
     """
